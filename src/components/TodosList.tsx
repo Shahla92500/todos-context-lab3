@@ -1,25 +1,30 @@
-import { useContext } from "react";
-import { TodosContext } from "../context/TodosContext";
-import { FilterContext } from "../context/FilterContext";
+import React from "react";
+import { useTodos } from "../context/TodosContext";
+import { useFilter } from "../context/FilterContext";
 
-function TodosList() {
-    const {todos} = useContext(TodosContext);
-    const {filter} = useContext(FilterContext);
+export function TodosList() {
+  const { todos } = useTodos();
+  const { filter } = useFilter();
 
+  const visibleTodos = todos.filter((todo) => {
+    if (filter === "active") return !todo.completed;
+    if (filter === "completed") return todo.completed;
+    return true; // 'all'
+  });
 
-    const filteredTodos = todos.filter((todo) => {
-        if (filter === 'active') return !todo.completed;
-        if (filter === 'completed') return todo.completed;
-        return true;
-    });
+  if (visibleTodos.length === 0) {
+    return <p>No todos for this filter.</p>;
+  }
 
-    return (
-        <div>
-            <h2>Todos List</h2>
-            <div>Filter: {filter}</div>
-            {filteredTodos.map(todo => <li key={todo.id}>{todo.text}</li>)}
-        </div>
-    )
+  return (
+    <ul>
+      {visibleTodos.map((todo) => (
+        <li key={todo.id}>
+          {todo.text} {todo.completed ? "✅" : "⬜"}
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export default TodosList;

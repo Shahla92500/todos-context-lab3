@@ -1,18 +1,41 @@
-import { useState, createContext, Children } from "react";
+// src/FilterContext.tsx
+import React, { createContext, useContext, useState } from "react";
 
-export const FilterContext = createContext('all');
+// 1. Allowed filter values
+export type FilterValue = "all" | "active" | "completed";
 
+// 2. Shape of the context
+type FilterContextType = {
+  filter: FilterValue;
+  setFilter: (value: FilterValue) => void;
+};
+
+// 3. Create the context
+export const FilterContext = createContext<FilterContextType | undefined>(
+  undefined
+);
+
+// 4. Provider props
 interface FilterProviderProps {
-    children : React.ReactNode
+  children: React.ReactNode;
 }
 
-export function FilterProvider({children}:FilterProviderProps) {
+// 5. Provider component
+export function FilterProvider({ children }: FilterProviderProps) {
+  const [filter, setFilter] = useState<FilterValue>("all");
 
-    const [filter, setFilter] = useState('all')
+  return (
+    <FilterContext.Provider value={{ filter, setFilter }}>
+      {children}
+    </FilterContext.Provider>
+  );
+}
 
-    return (
-        <FilterContext.Provider value={{filter, setFilter}}>
-        {children}
-        </FilterContext.Provider>
-    )
+// 6. Convenience hook
+export function useFilter() {
+  const ctx = useContext(FilterContext);
+  if (!ctx) {
+    throw new Error("useFilter must be used within a FilterProvider");
+  }
+  return ctx;
 }

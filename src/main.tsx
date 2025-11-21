@@ -5,12 +5,15 @@ import "./index.css";
 import App from "./App.tsx";
 import { TodosProvider } from "./context/TodosContext.tsx";
 import { FilterProvider } from "./context/FilterContext.tsx";
+import { ThemeProvider } from "./context/ThemeContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <TodosProvider>
       <FilterProvider>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </FilterProvider>
     </TodosProvider>
   </StrictMode>,
